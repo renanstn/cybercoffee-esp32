@@ -45,21 +45,21 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
 }
 
 void publish(const char* resource, char* data, bool persist) {
-    StaticJsonBuffer<128> jsonOutBuffer;
-    JsonObject& root = jsonOutBuffer.createObject();
-    root["channel"] = mqttChannel;
-    root["resource"] = resource;
-    if (persist) {
-        root["write"] = true;
-    }
-    root["data"] = data;
-    // Now print the JSON into a char buffer
-    char buffer[128];
-    root.printTo(buffer, sizeof(buffer));
-    // Create the topic to publish to
-    char topic[64];
-    // Now publish the char buffer to Beebotte
-    client.publish(topic, buffer);
+  StaticJsonBuffer<128> jsonOutBuffer;
+  JsonObject& root = jsonOutBuffer.createObject();
+  root["channel"] = mqttChannel;
+  root["resource"] = resource;
+  if (persist) {
+    root["write"] = true;
+  }
+  root["data"] = data;
+  // Now print the JSON into a char buffer
+  char buffer[128];
+  root.printTo(buffer, sizeof(buffer));
+  // Create the topic to publish to
+  char topic[64];
+  // Now publish the char buffer to Beebotte
+  client.publish(topic, buffer);
 }
 
 void setupMQTT() {
