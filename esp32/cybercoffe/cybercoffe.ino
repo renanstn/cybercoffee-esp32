@@ -3,6 +3,7 @@
 #include <ArduinoJson.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include "time.h"
 /**
    A lib ArduinoJson deve estar na versão 5
    A lib Ardafruit SSD1306 deve ser instalada
@@ -13,17 +14,21 @@
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = -3600*3;
+const int daylightOffset_sec = 0;
 const int serialSpeed = 115200;
 const char* ssid = "ssid";
 const char* password = "password";
 const char* mqttServer = "mqtt.beebotte.com";
 const int mqttPort = 1883;
-const char* mqttToken = "token:<token>";
+const char* mqttToken = "token:token";
 const char* mqttChannel = "esp32";
 const char* mqttResource = "notification";
 
 int  x, minX;
 String notification;
+char hour[6];
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -113,10 +118,30 @@ void setupDisplay() {
     for (;;); // Don't proceed, loop forever
   }
   display.clearDisplay();
-  display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setTextWrap(false);
   x = display.width();
+}
+
+void setupClock() {
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+}
+
+void getClockInfo() {
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  strftime(hour, 6, "%H:%M", &timeinfo);
+}
+
+void showClock() {
+//  display.clearDisplay();
+  display.setTextSize(3);
+  display.setCursor(20, 24);
+  display.println(hour);
+//  display.display();
 }
 
 void setScrollingMessage(String message) {
@@ -129,10 +154,11 @@ void setScrollingMessage(String message) {
 }
 
 void scrollMessage() {
-  display.clearDisplay();
+//  display.clearDisplay();
+  display.setTextSize(1);
   display.setCursor(x, 0);
   display.print(notification);
-  display.display();
+//  display.display();
   if (--x < minX) x = display.width();
 }
 
@@ -142,9 +168,16 @@ void setup() {
   setupMQTT();
   setupDisplay();
   mqttPublish(mqttResource, "ESP32 initialized", false);
+  setupClock();
+  getClockInfo();
+  showClock();
 }
 
 void loop() {
   client.loop();
+  getClockInfo();
+  display.clearDisplay();
   scrollMessage();
+  showClock();
+  display.display();
 }
