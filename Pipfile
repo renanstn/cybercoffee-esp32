@@ -10,6 +10,7 @@ beebotte = "*"
 fastapi = "*"
 python-decouple = "*"
 uvicorn = "*"
+unidecode = "*"
 
 [requires]
 python_version = "3.8"
