@@ -1,8 +1,8 @@
 # cybercoffee-esp32
 
 <p float="left">
-<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/screenshots/print01.jpg" width="360"/>
-<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/screenshots/print02.jpg" width="360"/>
+<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/screenshots/print01.jpg" width="360" height="360"/>
+<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/screenshots/print02.jpg" width="360" height="360"/>
 </p>
 
 ### Mas que p**** é essa?
