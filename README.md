@@ -9,7 +9,7 @@
 
 Cybercoffe é um acessório revolucionário e absolutamente desnecessário que irá se acoplar a sua fiel caneca de café, e lhe fornecerá informações valiosas como hora, notificações recebidas no celular, timer pomodoro, alarmes sonoros, e até mesmo mexer seu café ela vai fazer!
 
-É o futuro, na beira da sua caneca, fazendo peso a toa!
+>É o futuro, na beira da sua caneca, fazendo peso a toa!
 
 Em desenvolvimento, pq eu não tenho nada melhor pra fazer na vida.
 
