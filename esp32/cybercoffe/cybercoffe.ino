@@ -6,8 +6,8 @@
 #include "time.h"
 /**
    A lib ArduinoJson deve estar na versão 5
-   A lib Ardafruit SSD1306 deve ser instalada
-   A lib Ardafruit GFX Library deve ser instalada
+   A lib Ardafruit SSD1306 deve ser instalada a parte na IDE
+   A lib Ardafruit GFX Library deve ser instalada a parte na IDE
 */
 
 #define SCREEN_WIDTH 128
@@ -26,9 +26,9 @@ const char* mqttToken = "token:token";
 const char* mqttChannel = "esp32";
 const char* mqttResource = "notification";
 
-int  x, minX;
-String notification;
-char hour[6];
+String notification; // Armazenará a notificação atual sendo exibida
+char hour[6]; // Armazenará a hora atual
+int  x, minX; // Usadas para movimentação horizontal de textos no display
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -48,7 +48,7 @@ void setupWifi() {
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
-  // decode the JSON payload
+  // Decode the JSON payload
   StaticJsonBuffer<128> jsonInBuffer;
   JsonObject& root = jsonInBuffer.parseObject(payload);
   // Test if parsing succeeds.
@@ -137,11 +137,9 @@ void getClockInfo() {
 }
 
 void showClock() {
-//  display.clearDisplay();
   display.setTextSize(3);
   display.setCursor(20, 24);
   display.println(hour);
-//  display.display();
 }
 
 void setScrollingMessage(String message) {
@@ -154,11 +152,9 @@ void setScrollingMessage(String message) {
 }
 
 void scrollMessage() {
-//  display.clearDisplay();
   display.setTextSize(1);
   display.setCursor(x, 0);
   display.print(notification);
-//  display.display();
   if (--x < minX) x = display.width();
 }
 
