@@ -1,3 +1,4 @@
+import logging
 from settings import BEEBOTTE_API_KEY, BEEBOTTE_SECRET_KEY
 from model import NotificationModel
 from fastapi import FastAPI
@@ -15,6 +16,7 @@ async def root():
 async def notify(notification: NotificationModel):
     message = f"Notification from {notification.sender}: "
     message += f"{notification.message}"
+    logging.info(f"Mensagem recebida: {message}")
     # Remover acentos, pois a lib do display do arduino não os aceita
     message = unidecode(message)
     try:
