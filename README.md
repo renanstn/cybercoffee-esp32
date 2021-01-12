@@ -21,7 +21,7 @@ Até o atual momento, as seguintes tecnologias foram envolvidas no desenvolvimen
 - API REST, feita em Python(:heart:) + [fastAPI](https://fastapi.tiangolo.com/), hospedada no [Heroku](https://www.heroku.com/)
   - Esta API é responsável por receber comandos e notificações do celular, via *request HTTP*, tratá-las, e encaminhá-las para o Beebotte.
 - Aplicativo [IFTTT](https://play.google.com/store/apps/details?id=com.ifttt.ifttt&hl=pt_BR&gl=US), instalado no Android
-  - Este app automatiza o processo de enviar todas as notificações recebidas para a API via `webhook`
+  - Este app automatiza o processo de enviar todas as notificações recebidas para a API via *webhook*
 - Serviço [Beebotte](https://beebotte.com/home) (conta gratuita)
   - Este serviço faz a conexão do ESP32 na internet, via protocolo MQTT. Ele possui uma API *REST* que transforma as mensagens recebidas em publicações no sistema de *pub/sub* do MQTT
 - [Arduino IDE](https://www.arduino.cc/en/software)
