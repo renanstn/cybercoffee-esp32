@@ -29,11 +29,19 @@ async def notify(notification: NotificationModel):
 
 @app.post('/set-mode/')
 async def set_mode(set_mode: SetModeModel):
+    modes = {
+        "clock": 1,
+        "timer": 2,
+        "motor": 3,
+    }
+    mode = set_mode.mode
+    if mode not in modes.keys():
+        return {'message': 'Error! Mode not known'}
+    numeric_mode = modes[mode]
     try:
-        mode = set_mode.mode
         beebotte_client = BBT(BEEBOTTE_API_KEY, BEEBOTTE_SECRET_KEY)
         resource = Resource(beebotte_client, "esp32", "mode")
-        resource.publish(mode)
+        resource.publish(numeric_mode)
         return {'message': 'Mode changed!'}
     except:
         return {'message': 'Error!'}
