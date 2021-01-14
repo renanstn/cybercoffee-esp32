@@ -18,37 +18,28 @@
 const int channel = 0;
 const int frequence = 2000;
 const int resolution = 10;
-const int pomodoroWorkTime = 1500; // 25 minutes
-const int pomodoroShortBreak = 300; // 5 minutes
-const int pomodoroLongBreak = 600; // 10 minutes
-const int pomodoroRounds = 4;
 const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -3600 * 3;
 const int daylightOffset_sec = 0;
 const int serialSpeed = 115200;
-const char* ssid = "ssid";
-const char* password = "password";
 const char* mqttServer = "mqtt.beebotte.com";
 const int mqttPort = 1883;
-const char* mqttToken = "token:token";
 const char* mqttChannel = "esp32";
-const char* mqttResource = "notification";
+const char* mqttResourceNotification = "notification";
+const char* mqttResourcePomodoro = "pomodoro";
+const char* ssid = "ssid";
+const char* password = "password";
+const char* mqttToken = "token:mqttToken";
 
 String notification; // Armazenará a notificação atual sendo exibida
 char hour[6]; // Armazenará a hora atual
-int pomodoroTimer = pomodoroWorkTime; // Armazenará o timer do pomodoro, em segundos
+int pomodoroTimer = 0; // Armazenará o timer do pomodoro, em segundos
 int pomodoroMinutes;
 int pomodoroSeconds;
-int pomodoroRound = 1; // Armazena o round do pomodoro, pois a cada 3 shortBreaks, vem 1 longBreak
 char pomodoroClock[5]; // Armazena o timer do pomodoro formatado "99:99"
 int  x, minX; // Usadas para movimentação horizontal de textos no display
 TaskHandle_t pomodoroTimerHandle; // Handler do pomodoroTimer, que rodará em outro núcleo
 eTaskState statusOf; // // Armazenará o status do pomodoroTimer, que rodará em outro núcleo
-int active_mode; // Usado para armazenar o modo ativo no momento (relógio/pomodoro/motor)
-// Modos disponíveis:
-// 1: Clock
-// 2: Pomodoro
-// 3: Motor
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -81,14 +72,21 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     Serial.println("parseObject() failed");
     return;
   }
+  String topic_string(topic);
   String data = root["data"];
-  Serial.print("Received message of length ");
-  Serial.print(length);
+  Serial.print("Received message in topic: ");
+  Serial.print(topic);
   Serial.println();
   Serial.print("data: ");
   Serial.print(data);
   Serial.println();
-  setScrollingMessage(data);
+  if (topic_string == "esp32/notification") {
+    setScrollingMessage(data);
+  } else if (topic_string == "esp32/pomodoro") {
+    Serial.println("pomodoro");
+    Serial.println(data);
+    setPomodoro(data.toInt());
+  }
 }
 
 void mqttPublish(const char* resource, char* data, bool persist) {
@@ -129,10 +127,16 @@ void setupMQTT() {
       delay(2000);
     }
   }
-  // Subscribe to notifications channel
   char topic[64];
-  sprintf(topic, "%s/%s", mqttChannel, mqttResource);
+  // Subscribe to notifications channel
+  sprintf(topic, "%s/%s", mqttChannel, mqttResourceNotification);
   client.subscribe(topic);
+  Serial.println("Subscribed to notifications channel");
+  // Subscribe to pomodoro channel
+  sprintf(topic, "%s/%s", mqttChannel, mqttResourcePomodoro);
+  client.subscribe(topic);
+  Serial.println("Subscribed to pomodoro channel");
+  // Setup finished
   Serial.println("Setup MQTT finished");
 }
 
@@ -179,8 +183,7 @@ void startPomodoroTimer(void *pvParameters) {
   //ledcWriteTone(channel, 2000);
   //delay(1000);
   //ledcWriteTone(channel, 0);
-  pomodoroRound += 1;
-  pomodoroTimer = pomodoroWorkTime;
+  pomodoroTimer = 0;
   vTaskDelete(NULL);
 }
 
@@ -206,6 +209,11 @@ void setScrollingMessage(String message) {
   notification = message;
 }
 
+void setPomodoro(int time_in_seconds) {
+  pomodoroTimer = time_in_seconds;
+  xTaskCreatePinnedToCore(startPomodoroTimer, "startPomodoroTimer", 10000, NULL, 1, &pomodoroTimerHandle, 0);
+}
+
 void scrollMessage() {
   display.setTextSize(1);
   display.setCursor(x, 0);
@@ -214,37 +222,32 @@ void scrollMessage() {
 }
 
 void setup() {
-  active_mode = 1;
   Serial.begin(serialSpeed);
   setupWifi();
   //setupBuzzer();
   setupMQTT();
   setupDisplay();
-  mqttPublish(mqttResource, "ESP32 initialized", false);
+  mqttPublish(mqttResourceNotification, "ESP32 initialized", false);
   setupClock();
   getClockInfo();
   showClock();
-  // xTaskCreatePinnedToCore(startPomodoroTimer, "startPomodoroTimer", 10000, NULL, 1, &pomodoroTimerHandle, 0);
 }
 
 void loop() {
   client.loop();
   display.clearDisplay();
-  if (active_mode == 1) {
-    // Modo relógio
-    getClockInfo();
-    showClock();
-  } else if (active_mode == 2) {
+  if (pomodoroTimer != 0) {
     // Modo pomodoro timer
     showPomodoroTimer();
     statusOf = eTaskGetState(pomodoroTimerHandle);
     // Verifica se a task pomodoro já terminou
     if (statusOf == eReady) {
-      active_mode = 1;
+      pomodoroTimer = 0;
     }
-  } else if (active_mode == 3) {
-    // Modo rotor
-
+  } else {
+    // Modo relógio
+    getClockInfo();
+    showClock();
   }
   scrollMessage();
   display.display();
