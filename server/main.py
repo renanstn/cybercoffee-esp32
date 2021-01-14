@@ -30,7 +30,7 @@ async def notify(notification: NotificationModel):
 @app.post('/start-pomodoro/')
 async def set_mode(pomodoro: Pomodoro):
     time_in_minutes = pomodoro.time_in_minutes
-    time_in_seconds = time_in_minutes * 60
+    time_in_seconds = int(time_in_minutes) * 60
     try:
         beebotte_client = BBT(BEEBOTTE_API_KEY, BEEBOTTE_SECRET_KEY)
         resource = Resource(beebotte_client, "esp32", "pomodoro")
