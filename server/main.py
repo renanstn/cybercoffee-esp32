@@ -1,6 +1,6 @@
 import logging
 from settings import BEEBOTTE_API_KEY, BEEBOTTE_SECRET_KEY
-from model import NotificationModel, SetModeModel
+from model import NotificationModel, Pomodoro
 from fastapi import FastAPI
 from beebotte import BBT, Resource
 from unidecode import unidecode
@@ -23,25 +23,17 @@ async def notify(notification: NotificationModel):
         beebotte_client = BBT(BEEBOTTE_API_KEY, BEEBOTTE_SECRET_KEY)
         resource = Resource(beebotte_client, "esp32", "notification")
         resource.publish(message)
-        return {'message': 'Notification sent!'}
-    except:
-        return {'message': 'Error!'}
+        return {'message': 'Notification sent'}
+    except Exception as err:
+        return {'message': str(err)}
 
-@app.post('/set-mode/')
-async def set_mode(set_mode: SetModeModel):
-    modes = {
-        "clock": 1,
-        "timer": 2,
-        "motor": 3,
-    }
-    mode = set_mode.mode
-    if mode not in modes.keys():
-        return {'message': 'Error! Mode not known'}
-    numeric_mode = modes[mode]
+@app.post('/start-pomodoro/')
+async def set_mode(pomodoro: Pomodoro):
+    time_in_minutes = pomodoro.time_in_minutes
     try:
         beebotte_client = BBT(BEEBOTTE_API_KEY, BEEBOTTE_SECRET_KEY)
-        resource = Resource(beebotte_client, "esp32", "mode")
-        resource.publish(numeric_mode)
-        return {'message': 'Mode changed!'}
-    except:
-        return {'message': 'Error!'}
+        resource = Resource(beebotte_client, "esp32", "pomodoro")
+        resource.publish(time_in_minutes)
+        return {'message': 'Pomodoro started'}
+    except Exception as err:
+        return {'message': str(err)}
