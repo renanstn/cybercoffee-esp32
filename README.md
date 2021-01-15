@@ -11,6 +11,8 @@ Cybercoffe é um acessório revolucionário e absolutamente desnecessário que i
 - Exibir notificações recebidas no celular
 - (em breve) Mexer seu café
 
+Além de deixá-la com um visual futurista-mas-não-tanto.
+
 >*"É o futuro, na beira da sua caneca, fazendo peso a toa!"*
 
 Em desenvolvimento, pq eu não tenho nada melhor pra fazer na quarentena.
