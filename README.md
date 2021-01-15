@@ -1,9 +1,6 @@
 # cybercoffee-esp32
 
-<p float="left">
-<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/screenshots/print01.jpg" width="360" height="360"/>
-<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/screenshots/print02.jpg" width="360" height="360"/>
-</p>
+![photo](https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo01.jpg)
 
 ### Mas que p**** é essa?
 
@@ -26,3 +23,10 @@ Até o atual momento, as seguintes tecnologias foram envolvidas no desenvolvimen
   - Este serviço faz a conexão do ESP32 na internet, via protocolo MQTT. Ele possui uma API *REST* que transforma as mensagens recebidas em publicações no sistema de *pub/sub* do MQTT
 - [Arduino IDE](https://www.arduino.cc/en/software)
   - Para carregar códigos na placa ESP32
+
+# Fotos
+
+<p float="left">
+<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo02.jpg" height="360"/>
+<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo03.jpg" height="360"/>
+</p>
