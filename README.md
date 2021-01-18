@@ -38,9 +38,7 @@ Até o momento, as seguintes tecnologias foram envolvidas no desenvolvimento do 
 
 # Fotos
 
-![photo](https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo02.jpg)
-![photo](https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo03.jpg)
 <p float="left">
-<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo02.jpg" height="360"/>
-<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo03.jpg" height="360"/>
+<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo02.jpg" height="350"/>
+<img src="https://github.com/renanstd/cybercoffee-esp32/blob/main/images/photo03.jpg" height="350"/>
 </p>
