@@ -234,6 +234,12 @@ void setup() {
 }
 
 void loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    setupWifi();
+  }
+  if (!client.connected()) {
+    setupMQTT();
+  }
   client.loop();
   display.clearDisplay();
   if (pomodoroTimer != 0) {
