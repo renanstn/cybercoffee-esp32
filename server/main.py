@@ -14,8 +14,7 @@ async def root():
 
 @app.post('/notify/')
 async def notify(notification: NotificationModel):
-    message = f"Notification from {notification.sender}: "
-    message += f"{notification.message}"
+    message = f"{notification.sender}: {notification.message}"
     logging.info(f"Mensagem recebida: {message}")
     # Remover acentos, pois a lib do display do arduino não os aceita
     message = unidecode(message)
