@@ -1,6 +1,6 @@
 import logging
 from settings import BEEBOTTE_API_KEY, BEEBOTTE_SECRET_KEY
-from model import NotificationModel, Pomodoro
+from model import NotificationModel, Timer
 from fastapi import FastAPI
 from beebotte import BBT, Resource
 from unidecode import unidecode
