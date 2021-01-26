@@ -6,5 +6,5 @@ class NotificationModel(BaseModel):
     message: str
 
 
-class Pomodoro(BaseModel):
+class Timer(BaseModel):
     time_in_minutes: str
