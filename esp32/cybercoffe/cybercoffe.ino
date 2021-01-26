@@ -27,9 +27,9 @@ const int mqttPort = 1883;
 const char* mqttChannel = "esp32";
 const char* mqttResourceNotification = "notification";
 const char* mqttResourcePomodoro = "pomodoro";
-const char* ssid = "Doc";
-const char* password = "A336818r";
-const char* mqttToken = "token:token_h1I5BlH4ck6TNQ7y";
+const char* ssid = "ssid";
+const char* password = "password";
+const char* mqttToken = "token:mqttToken";
 
 String notification; // Armazenará a notificação atual sendo exibida
 char hour[6]; // Armazenará a hora atual
@@ -234,12 +234,6 @@ void setup() {
 }
 
 void loop() {
-  if (WiFi.status() != WL_CONNECTED) {
-    setupWifi();
-  }
-  if (!client.connected()) {
-    setupMQTT();
-  }
   client.loop();
   display.clearDisplay();
   if (pomodoroTimer != 0) {
