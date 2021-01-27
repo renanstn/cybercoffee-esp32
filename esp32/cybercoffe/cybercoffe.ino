@@ -13,7 +13,7 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
-#define BUZZER_PIN 15
+#define BUZZER_PIN 18
 
 const int channel = 0;
 const int frequence = 2000;
@@ -26,7 +26,8 @@ const char* mqttServer = "mqtt.beebotte.com";
 const int mqttPort = 1883;
 const char* mqttChannel = "esp32";
 const char* mqttResourceNotification = "notification";
-const char* mqttResourcePomodoro = "pomodoro";
+const char* mqttResourcePomodoro = "timer";
+const bool beep_on_notifications = false;
 const char* ssid = "ssid";
 const char* password = "password";
 const char* mqttToken = "token:mqttToken";
@@ -61,6 +62,13 @@ void setupWifi() {
 void setupBuzzer() {
   ledcSetup(channel, frequence, resolution);
   ledcAttachPin(BUZZER_PIN, channel);
+  ledcWrite(channel, 3000);
+  // Faz um bip pra falar "oi"
+  // ledcWriteTone(channel, 0);
+  ledcWrite(channel, 255);
+  ledcWriteTone(channel, 1000);
+  delay(500);
+  ledcWrite(channel, 3000);
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
@@ -81,9 +89,16 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   Serial.print(data);
   Serial.println();
   if (topic_string == "esp32/notification") {
+    if (beep_on_notifications) {
+      // Toca um barulhinho de notificação
+      ledcWrite(channel, 255);
+      ledcWriteTone(channel, 1000);
+      delay(100);
+      ledcWrite(channel, 3000);
+    }
     setScrollingMessage(data);
-  } else if (topic_string == "esp32/pomodoro") {
-    Serial.println("pomodoro");
+  } else if (topic_string == "esp32/timer") {
+    Serial.println("timer");
     Serial.println(data);
     setPomodoro(data.toInt());
   }
@@ -180,9 +195,15 @@ void startPomodoroTimer(void *pvParameters) {
     delay(1000);
   }
   // Tocar o alarme ao fim do tempo
-  //ledcWriteTone(channel, 2000);
-  //delay(1000);
-  //ledcWriteTone(channel, 0);
+  for (int i = 0; i < 3; i++) {
+    ledcWrite(channel, 255);
+    ledcWriteTone(channel, 1000);
+    delay(500);
+    ledcWrite(channel, 3000);
+    delay(500);
+  }
+  ledcWrite(channel, 3000);
+  // ledcWriteTone(channel, 0);
   pomodoroTimer = 0;
   vTaskDelete(NULL);
 }
@@ -224,7 +245,7 @@ void scrollMessage() {
 void setup() {
   Serial.begin(serialSpeed);
   setupWifi();
-  //setupBuzzer();
+  setupBuzzer();
   setupMQTT();
   setupDisplay();
   mqttPublish(mqttResourceNotification, "ESP32 initialized", false);
